@@ -30,6 +30,7 @@
     force: "{{ win_evergreen_download_force | default(omit) }}"
     dest: '{{ win_evergreen_download_dir }}\'
     url: "{{ get_url_result.stdout | trim }}"
+    validate_certs: "{{ win_evergreen_validate_certs | default(omit) }}"
   register: download_app_result
 
 - name: Debug download_app_result
@@ -50,6 +51,7 @@
     product_id: "{{ win_evergreen_product_id | default(omit) }}"
     provider: "{{ win_evergreen_provider | default(omit) }}"
     state: "{{ win_evergreen_state | default('present') }}"
+    validate_certs: "{{ win_evergreen_validate_certs | default(omit) }}"
     wait_for_children: "{{ win_evergreen_wait_for_children | default(omit) }}"
   register: install_package_result
 

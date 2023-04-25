@@ -31,5 +31,6 @@ win_evergreen_download_force: false
 # win_evergreen_product_id
 # win_evergreen_provider
 # win_evergreen_state
+# win_evergreen_validate_certs
 # win_evergreen_wait_for_children
 ...
