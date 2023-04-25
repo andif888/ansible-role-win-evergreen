@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - role: ansible-role-win-evergreen
+      vars:
+        win_evergreen_app_name: "NotepadPlusPlus"
+        win_evergreen_get_app_command: 'Get-EvergreenApp -Name "{{ win_evergreen_app_name }}" | Where-Object { $_.Architecture -eq "x64" -and $_.Type -eq "exe" } | Select-Object -First 1'
+        win_evergreen_arguments:
+          - /S
+
+    - role: ansible-role-win-evergreen
+      vars:
+        win_evergreen_app_name: "MozillaFirefox"
+        win_evergreen_get_app_command: 'Get-EvergreenApp -Name "{{ win_evergreen_app_name }}" | Where-Object { $_.Architecture -eq "x64" -and $_.Type -eq "exe" -and $_.Channel -eq "LATEST_FIREFOX_VERSION" } | Select-Object -First 1'
+        win_evergreen_arguments:
+          - /S
+          - /TaskbarShortcut=false
+          - /DesktopShortcut=false
+          - /MaintenanceService=false
+          - /PreventRebootRequired=true
+...

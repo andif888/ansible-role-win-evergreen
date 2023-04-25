@@ -1,0 +1,35 @@
+---
+# defaults file for ansible-role-win-evergreen
+
+# @var win_evergreen_app_name:description: Name of the app
+win_evergreen_app_name: "SomeApp"
+
+# @var win_evergreen_download_dir:description: Download directory
+win_evergreen_download_dir: 'C:\windows\temp\evergreen'
+
+# @var win_evergreen_get_app_command:description: >
+# Powershell command to get app information
+#
+# https://stealthpuppy.com/evergreen/use/
+# @end
+win_evergreen_get_app_command: 'Get-EvergreenApp -Name "{{ win_evergreen_app_name }}" | Where-Object { $_.Architecture -eq "x64" -and $_.Ring -eq "General" -and $_.Type -eq "msi" }'
+
+# @var win_evergreen_download_force:description: Force download, also when file already exists
+win_evergreen_download_force: false
+
+# checkout optional variables in Task "Install package for"
+# https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_package_module.html
+
+# win_evergreen_arguments
+# win_evergreen_chdir
+# win_evergreen_creates_path
+# win_evergreen_creates_service
+# win_evergreen_creates_version
+# win_evergreen_expected_return_codes
+# win_evergreen_follow_redirects
+# win_evergreen_log_path
+# win_evergreen_product_id
+# win_evergreen_provider
+# win_evergreen_state
+# win_evergreen_wait_for_children
+...

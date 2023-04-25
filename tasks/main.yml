@@ -1,0 +1,52 @@
+---
+# tasks file for ansible-role-win-evergreen
+- name: Install Evergreen Powershell Module
+  community.windows.win_psmodule:
+    name: Evergreen
+    state: present
+
+- name: Get URL for {{ win_evergreen_app_name }}
+  ansible.windows.win_shell: |
+    Import-Module Evergreen
+    $app = {{ win_evergreen_get_app_command }}
+    Write-Host $app.Uri
+  register: get_url_result
+  changed_when: false
+
+- name: Debug get_url_result
+  ansible.builtin.debug:
+    msg: "{{ get_url_result.stdout | trim }}"
+
+- name: Download {{ win_evergreen_app_name }}
+  ansible.windows.win_get_url:
+    follow_redirects: "{{ win_evergreen_follow_redirects | default(omit) }}"
+    force: "{{ win_evergreen_download_force | default(omit) }}"
+    dest: "{{ win_evergreen_download_dir }}"
+    url: "{{ get_url_result.stdout | trim }}"
+  register: download_app_result
+
+- name: Debug download_app_result
+  ansible.builtin.debug:
+    var: download_app_result
+
+- name: Install package for {{ evergreen_app_name }}
+  ansible.windows.win_package:
+    arguments: "{{ win_evergreen_arguments | default(omit) }}"
+    chdir: "{{ win_evergreen_chdir | default(omit) }}"
+    creates_path: "{{ win_evergreen_creates_path | default(omit) }}"
+    creates_service: "{{ win_evergreen_creates_service | default(omit) }}"
+    creates_version: "{{ win_evergreen_creates_version | default(omit) }}"
+    expected_return_codes: "{{ win_evergreen_expected_return_codes | default(omit) }}"
+    follow_redirects: "{{ win_evergreen_follow_redirects | default(omit) }}"
+    log_path: "{{ win_evergreen_log_path | default(omit) }}"
+    path: "{{ download_app_result.dest }}"
+    product_id: "{{ win_evergreen_product_id | default(omit) }}"
+    provider: "{{ win_evergreen_provider | default(omit) }}"
+    state: "{{ win_evergreen_state | default('present') }}"
+    wait_for_children: "{{ win_evergreen_wait_for_children | default(omit) }}"
+  register: install_package_result
+
+- name: Debug install_package_result
+  ansible.builtin.debug:
+    var: install_package_result
+...
