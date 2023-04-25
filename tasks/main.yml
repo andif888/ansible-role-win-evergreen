@@ -1,8 +1,15 @@
 ---
 # tasks file for ansible-role-win-evergreen
+- name: Ensure {{ win_evergreen_download_dir }} exists
+  ansible.windows.win_file:
+    path: "{{ win_evergreen_download_dir }}"
+    state: directory
+
 - name: Install Evergreen Powershell Module
   community.windows.win_psmodule:
+    accept_license: true
     name: Evergreen
+    skip_publisher_check: true
     state: present
 
 - name: Get URL for {{ win_evergreen_app_name }}
@@ -21,7 +28,7 @@
   ansible.windows.win_get_url:
     follow_redirects: "{{ win_evergreen_follow_redirects | default(omit) }}"
     force: "{{ win_evergreen_download_force | default(omit) }}"
-    dest: "{{ win_evergreen_download_dir }}"
+    dest: '{{ win_evergreen_download_dir }}\'
     url: "{{ get_url_result.stdout | trim }}"
   register: download_app_result
 
@@ -29,7 +36,7 @@
   ansible.builtin.debug:
     var: download_app_result
 
-- name: Install package for {{ evergreen_app_name }}
+- name: Install package for {{ win_evergreen_app_name }}
   ansible.windows.win_package:
     arguments: "{{ win_evergreen_arguments | default(omit) }}"
     chdir: "{{ win_evergreen_chdir | default(omit) }}"
