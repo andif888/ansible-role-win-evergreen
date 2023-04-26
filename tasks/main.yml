@@ -5,6 +5,9 @@
     path: "{{ win_evergreen_download_dir }}"
     state: directory
 
+- name: Install-PackageProvider Nuget
+  ansible.windows.win_shell: Install-PackageProvider -Name Nuget -Force
+
 - name: Install Evergreen Powershell Module
   community.windows.win_psmodule:
     accept_license: true
