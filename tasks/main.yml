@@ -12,8 +12,22 @@
   community.windows.win_psmodule:
     accept_license: true
     name: Evergreen
-    skip_publisher_check: true
+    #skip_publisher_check: true
     state: present
+  register: install_evergreen_psm_result
+  ignore_errors: true
+
+- name: Install-PackageProvider Nuget (2nd try)
+  ansible.windows.win_shell: Install-PackageProvider -Name Nuget -Force
+  when: install_evergreen_psm_result.failed
+
+- name: Install Evergreen Powershell Module (2nd try)
+  community.windows.win_psmodule:
+    accept_license: true
+    name: Evergreen
+    #skip_publisher_check: true
+    state: present
+  when: install_evergreen_psm_result.failed
 
 - name: Get URL for {{ win_evergreen_app_name }}
   ansible.windows.win_shell: |
